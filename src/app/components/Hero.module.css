@@ -152,7 +152,7 @@
   transition: all 0.2s ease;
 }
 .ctaSecondary:hover {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   background: rgba(255,255,255,0.05);
   border-color: rgba(255,255,255,0.14);
 }
