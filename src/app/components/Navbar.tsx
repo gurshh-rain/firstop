@@ -5,9 +5,8 @@ import styles from "./Navbar.module.css";
 
 const LINKS = [
   { label: "Search",  href: "#waitlist" },
-  { label: "Co-ops",  href: "#waitlist" },
   
-  { label: "About",   href: "#waitlist" },
+  { label: "About",   href: "/about" },
   { label: "Profile", href: "#waitlist" },
 ];
 
@@ -51,7 +50,7 @@ export default function Navbar() {
         </ul>
 
         <div className={styles.actions}>
-          <Link href="/#waitlist" className={styles.loginBtn}>Sign in</Link>
+          <Link href="#waitlist" className={styles.loginBtn}>Sign in</Link>
           <a href="#waitlist" className={styles.ctaBtn}>Join Waitlist</a>
         </div>
 
