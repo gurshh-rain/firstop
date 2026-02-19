@@ -1,0 +1,192 @@
+.nav {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: calc(100% - 40px);
+  max-width: 860px;
+  transition: transform 0.45s cubic-bezier(0.32,0,0.2,1), opacity 0.4s ease;
+}
+
+.hidden {
+  transform: translateX(-50%) translateY(-140%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 6px 0 18px;
+  border-radius: 14px;
+
+
+  background: rgba(9, 9, 9, 0.653);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 4px 6px rgba(0, 0, 0, 0.3),
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.scrolled .pill {
+  background: rgba(10, 10, 18, 0.75);
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    0 24px 64px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    /* subtle purple glow underneath */
+    0 0 80px rgba(120, 80, 255, 0.06);
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.3px;
+  flex-shrink: 0;
+  margin-right: auto;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.link {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color 0.18s ease, background 0.18s ease;
+  white-space: nowrap;
+  letter-spacing: -0.1px;
+}
+.link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.loginBtn {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+.loginBtn:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* CTA — Novora style: small rounded button with gradient border */
+.ctaBtn {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+  padding: 7px 14px;
+  border-radius: 9px;
+  letter-spacing: -0.1px;
+  position: relative;
+  /* gradient border trick */
+  background: #177cff;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease;
+}
+.ctaBtn:hover {
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.1) 100%);
+  border-color: rgba(255,255,255,0.24);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    0 4px 16px rgba(0,0,0,0.4);
+}
+.ctaBtn:active { transform: scale(0.97); }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px;
+  margin-left: auto;
+  border-radius: 8px;
+}
+.bar {
+  display: block;
+  width: 18px; height: 1.5px;
+  background: rgba(8, 8, 8, 0.7);
+  border-radius: 2px;
+  transition: transform 0.26s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+.bar1Open { transform: rotate(45deg) translate(4.5px, 4.5px); }
+.bar2Open { opacity: 0; }
+.bar3Open { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+/* Mobile drawer — glass card below pill */
+.drawer {
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.32s ease;
+  margin-top: 8px;
+  border-radius: 14px;
+  background: rgba(10, 10, 18, 0.82);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+  padding: 0 6px;
+}
+.drawerOpen { max-height: 400px; }
+.drawerLink {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-radius: 8px;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+.drawerLink:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05); }
+.drawerCta {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  padding: 14px 10px 10px;
+}
+
+@media (max-width: 734px) {
+  .nav { width: calc(100% - 24px); top: 14px; }
+  .links, .actions { display: none; }
+  .hamburger { display: flex; }
+  .drawer { display: flex; }
+}
