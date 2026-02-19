@@ -80,7 +80,7 @@
   animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.28s both;
 }
 .heroLine3 {
-  color: #f0f0f8;
+  color: #ff629c;
   animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.38s both;
 }
 
@@ -545,7 +545,7 @@
   font-size: 15px;
   font-weight: 500;
   color: rgba(255,255,255,0.95);
-  background: #177cff;
+  background: #ff176c;
   padding: 14px 32px;
   border-radius: 12px;
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
@@ -553,9 +553,9 @@
   letter-spacing: -0.01em;
 }
 .ctaBtn:hover {
-  background: #3a8fff;
+  background: #ff4a8c;
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(23,124,255,0.45);
+  box-shadow: 0 8px 32px rgba(255, 23, 135, 0.45);
 }
 .ctaBtn:active { transform: scale(0.97); }
 
