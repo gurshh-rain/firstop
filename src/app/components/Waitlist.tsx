@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { createClient } from "../lib/supabase";
 import Reveal from "./Reveal";
 import styles from "./Waitlist.module.css";
 
@@ -37,7 +38,6 @@ export default function Waitlist() {
     setLoading(true);
 
     try {
-      const { createClient } = await import("../lib/supabase");
       const supabase = createClient();
 
       const { error: dbError } = await supabase
