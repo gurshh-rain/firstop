@@ -175,7 +175,6 @@ export default function Hero() {
             <span className={styles.eyebrowDot} />
             Internships for students
           </span>
-          <span className={styles.indexLabel}>01 / Hero</span>
         </div>
 
         <h1 className={styles.headline}>
@@ -189,8 +188,7 @@ export default function Hero() {
         <div className={styles.bottomRow}>
           <div className={styles.bottomLeft}>
             <p className={styles.sub}>
-              FirstOp connects high school students with real internships
-              and co-ops — no degree needed, no experience required.
+              FirstOp connects students with real structured startup opportunities, no experience required.
             </p>
             <div className={styles.ctas}>
               <a href="#waitlist" className={styles.ctaPrimary}>Join the Waitlist</a>

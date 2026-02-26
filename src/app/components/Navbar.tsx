@@ -4,71 +4,111 @@ import Link from "next/link";
 import styles from "./Navbar.module.css";
 
 const LINKS = [
-  { label: "Search",  href: "#waitlist" },
-  
-  { label: "About",   href: "#waitlist" },
-  { label: "Profile", href: "#waitlist" },
+  { label: "Search",  idx: "01", href: "#waitlist" },
+  { label: "About",   idx: "02", href: "#waitlist"  },
+  { label: "Profile", idx: "03", href: "#waitlist" },
 ];
 
 export default function Navbar() {
-  const [scrollY, setScrollY] = useState(0);
-  const [open,    setOpen]    = useState(false);
-  const [hidden,  setHidden]  = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden,   setHidden]   = useState(false);
+  const [open,     setOpen]     = useState(false);
   const prevY = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      if (y > 120 && y > prevY.current + 8)  setHidden(true);
+      setScrolled(y > 20);
+      if (y > 100 && y > prevY.current + 6)  setHidden(true);
       if (y < prevY.current - 4)             setHidden(false);
-      setScrollY(y);
       prevY.current = y;
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrolled = scrollY > 40;
+  // lock body scroll when menu open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   return (
-    <nav
-      className={[
+    <>
+      <nav className={[
         styles.nav,
         scrolled ? styles.scrolled : "",
         hidden   ? styles.hidden   : "",
-      ].filter(Boolean).join(" ")}
-    >
-      <div className={styles.pill}>
-        <Link href="/" className={styles.logo}>FirstOpz</Link>
+      ].filter(Boolean).join(" ")}>
 
+        {/* Left — logo */}
+        <Link href="/" className={styles.logo} onClick={() => setOpen(false)}>
+          <span className={styles.logoText}>FirstOpz</span>
+        </Link>
+
+        {/* Center — indexed links (desktop) */}
         <ul className={styles.links}>
           {LINKS.map(l => (
-            <li key={l.href}>
-              <Link href={l.href} className={styles.link}>{l.label}</Link>
+            <li key={l.idx}>
+              <Link href={l.href} className={styles.link}>
+                <span className={styles.linkIdx}>{l.idx}</span>
+                {l.label}
+              </Link>
             </li>
           ))}
         </ul>
 
-        <div className={styles.actions}>
-          <Link href="#waitlist" className={styles.loginBtn}>Sign in</Link>
-          <a href="#waitlist" className={styles.ctaBtn}>Join Waitlist</a>
+        {/* Right — waitlist + menu toggle */}
+        <div className={styles.right}>
+          <a href="#waitlist" className={styles.waitlistBtn}>
+            <span className={styles.waitlistDot} />
+            Waitlist
+          </a>
+
+          {/* Menu toggle — two horizontal lines become X */}
+          <button
+            className={`${styles.menuBtn} ${open ? styles.menuBtnOpen : ""}`}
+            onClick={() => setOpen(o => !o)}
+            aria-label={open ? "Close menu" : "Open menu"}
+          >
+            <span className={styles.menuLine} />
+            <span className={styles.menuLine} />
+          </button>
         </div>
+      </nav>
 
-        <button className={styles.hamburger} onClick={() => setOpen(o => !o)} aria-label="Menu">
-          <span className={`${styles.bar} ${open ? styles.bar1Open : ""}`} />
-          <span className={`${styles.bar} ${open ? styles.bar2Open : ""}`} />
-          <span className={`${styles.bar} ${open ? styles.bar3Open : ""}`} />
-        </button>
-      </div>
+      {/* Full-screen overlay menu */}
+      <div className={`${styles.overlay} ${open ? styles.overlayOpen : ""}`}>
+        <div className={styles.overlayInner}>
+          <nav className={styles.overlayLinks}>
+            {LINKS.map((l, i) => (
+              <Link
+                key={l.idx}
+                href={l.href}
+                className={styles.overlayLink}
+                style={{ transitionDelay: open ? `${i * 60}ms` : "0ms" }}
+                onClick={() => setOpen(false)}
+              >
+                <span className={styles.overlayIdx}>{l.idx}</span>
+                {l.label}
+              </Link>
+            ))}
+          </nav>
 
-      <div className={`${styles.drawer} ${open ? styles.drawerOpen : ""}`}>
-        {LINKS.map(l => (
-          <Link key={l.href} href={l.href} className={styles.drawerLink} onClick={() => setOpen(false)}>
-            {l.label}
-          </Link>
-        ))}
-        <a href="#waitlist" className={styles.drawerCta} onClick={() => setOpen(false)}>Join Waitlist</a>
+          <div className={styles.overlayFooter}>
+            <a
+              href="#waitlist"
+              className={styles.overlayWaitlist}
+              onClick={() => setOpen(false)}
+            >
+              Join the Waitlist →
+            </a>
+            <span className={styles.overlayTagline}>
+              Free · No experience needed
+            </span>
+          </div>
+        </div>
       </div>
-    </nav>
+    </>
   );
 }
