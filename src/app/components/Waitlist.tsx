@@ -154,7 +154,7 @@ export default function Waitlist() {
                   {loading ? <span className={styles.spinner} /> : "Join the Waitlist"}
                 </button>
 
-                <p className={styles.fine}>Free forever · No spam · Cancel anytime</p>
+                <p className={styles.fine}>Free forever · No spam</p>
               </form>
             </div>
           )}
