@@ -42,7 +42,7 @@ export default function Waitlist() {
 
       const { error: dbError } = await supabase
         .from("waitlist")
-        .insert({ name: name.trim(), email: email.trim(), grade, field, commitment });
+        .insert([{ name: name.trim(), email: email.trim(), grade, field, commitment }] as any);
 
       if (dbError) {
         console.error("Supabase error:", dbError);
