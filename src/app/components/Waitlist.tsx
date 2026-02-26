@@ -10,9 +10,9 @@ const FIELDS = [
   "Sciences & Research", "Media & Journalism", "Other",
 ];
 const COMMITMENT = [
-  { value: "immediate", label: "Yes — immediately" },
-  { value: "3months",   label: "Within 3 months"  },
-  { value: "exploring", label: "Just exploring"    },
+  { value: "immediate",  label: "Yes — immediately" },
+  { value: "3months",    label: "Within 3 months" },
+  { value: "exploring",  label: "Just exploring" },
 ];
 
 export default function Waitlist() {
@@ -27,37 +27,25 @@ export default function Waitlist() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!name.trim() || !email.trim() || !grade || !field || !commitment) {
+    if (!name || !email || !grade || !field || !commitment) {
       setError("Please fill in all fields.");
       return;
     }
-
     setError("");
     setLoading(true);
+    const { createClient } = await import("../lib/supabase");
+    const supabase = createClient();
+    const { error: dbError } = await supabase
+      .from("waitlist")
+      .insert({ name, email, grade, field, commitment });
 
-    try {
-      const { createClient } = await import("../lib/supabase");
-      const supabase = createClient();
-
-      const { error: dbError } = await supabase
-        .from("waitlist")
-        .insert({ name: name.trim(), email: email.trim(), grade, field, commitment });
-
-      if (dbError) {
-        console.error("Supabase error:", dbError);
-        setError(`Error: ${dbError.message}`);
-        setLoading(false);
-        return;
-      }
-
-      setSubmitted(true);
-    } catch (err: unknown) {
-      console.error("Submit failed:", err);
-      const message = err instanceof Error ? err.message : "Unknown error";
-      setError(`Something went wrong: ${message}`);
+    if (dbError) {
+      setError("Something went wrong. Please try again.");
       setLoading(false);
+      return;
     }
+    setLoading(false);
+    setSubmitted(true);
   };
 
   return (
@@ -68,7 +56,7 @@ export default function Waitlist() {
         <Reveal delay={80}><h2 className={styles.heading}>Be first in line.</h2></Reveal>
         <Reveal delay={160}>
           <p className={styles.sub}>
-            We&apos;re launching soon. Join the waitlist and get access
+            We're launching soon. Join the waitlist and get access
             the moment FirstOpz goes live.
           </p>
         </Reveal>
@@ -78,8 +66,8 @@ export default function Waitlist() {
             <div className={styles.successCard}>
               <div className={styles.cardShimmer} aria-hidden />
               <div className={styles.successIcon}>✓</div>
-              <p className={styles.successTitle}>You&apos;re on the list.</p>
-              <p className={styles.successSub}>We&apos;ll reach out the moment we launch.</p>
+              <p className={styles.successTitle}>You're on the list.</p>
+              <p className={styles.successSub}>We'll reach out the moment we launch.</p>
             </div>
           ) : (
             <div className={styles.formCard}>
@@ -97,7 +85,6 @@ export default function Waitlist() {
                       onChange={e => setName(e.target.value)}
                       placeholder="Jane Smith"
                       className={styles.input}
-                      autoComplete="name"
                     />
                   </div>
                   <div className={styles.field}>
@@ -109,20 +96,18 @@ export default function Waitlist() {
                       onChange={e => setEmail(e.target.value)}
                       placeholder="you@email.com"
                       className={styles.input}
-                      autoComplete="email"
-                      inputMode="email"
                     />
                   </div>
                 </div>
 
+                {/* Grade */}
                 <div className={styles.field}>
                   <label className={styles.label}>Current grade</label>
                   <div className={styles.chipGroup}>
                     {GRADES.map(g => (
                       <button
-                        key={g}
-                        type="button"
-                        onPointerDown={e => { e.preventDefault(); setGrade(g); }}
+                        key={g} type="button"
+                        onClick={() => setGrade(g)}
                         className={`${styles.chip} ${grade === g ? styles.chipActive : ""}`}
                       >
                         {g}
@@ -131,14 +116,14 @@ export default function Waitlist() {
                   </div>
                 </div>
 
+                {/* Field of interest */}
                 <div className={styles.field}>
                   <label className={styles.label}>Intended field of interest</label>
                   <div className={styles.chipGroup}>
                     {FIELDS.map(f => (
                       <button
-                        key={f}
-                        type="button"
-                        onPointerDown={e => { e.preventDefault(); setField(f); }}
+                        key={f} type="button"
+                        onClick={() => setField(f)}
                         className={`${styles.chip} ${field === f ? styles.chipActive : ""}`}
                       >
                         {f}
@@ -147,14 +132,14 @@ export default function Waitlist() {
                   </div>
                 </div>
 
+                {/* Commitment */}
                 <div className={styles.field}>
                   <label className={styles.label}>Ready to commit?</label>
                   <div className={styles.commitGroup}>
                     {COMMITMENT.map(c => (
                       <button
-                        key={c.value}
-                        type="button"
-                        onPointerDown={e => { e.preventDefault(); setCommitment(c.value); }}
+                        key={c.value} type="button"
+                        onClick={() => setCommitment(c.value)}
                         className={`${styles.commitBtn} ${commitment === c.value ? styles.commitActive : ""}`}
                       >
                         {c.label}
@@ -169,7 +154,7 @@ export default function Waitlist() {
                   {loading ? <span className={styles.spinner} /> : "Join the Waitlist"}
                 </button>
 
-                <p className={styles.fine}>Free forever · No spam · Cancel anytime</p>
+                <p className={styles.fine}>Free forever · No spam</p>
               </form>
             </div>
           )}
