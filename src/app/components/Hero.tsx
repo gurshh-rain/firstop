@@ -174,7 +174,7 @@ export default function Hero() {
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowDot} />
             Micro-Internships for students
-          </span>
+          </span> 
         </div>
 
         <h1 className={styles.headline}>
