@@ -57,7 +57,7 @@ export default function Waitlist() {
         <Reveal delay={160}>
           <p className={styles.sub}>
             We're launching soon. Join the waitlist and get access
-            the moment FirstOp goes live.
+            the moment FirstOpz goes live.
           </p>
         </Reveal>
 

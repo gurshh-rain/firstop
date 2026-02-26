@@ -188,7 +188,7 @@ export default function Hero() {
         <div className={styles.bottomRow}>
           <div className={styles.bottomLeft}>
             <p className={styles.sub}>
-              FirstOp connects students with real structured startup opportunities, no experience required.
+              FirstOpz connects students with real structured startup opportunities, no experience required.
             </p>
             <div className={styles.ctas}>
               <a href="#waitlist" className={styles.ctaPrimary}>Join the Waitlist</a>

@@ -10,7 +10,7 @@ const SHARDS = [
   { letter: "—",  ex:  0, ey:  0 },
   { letter: "S",  ex:  1, ey:  0 },
   { letter: "T",  ex: -1, ey:  1 },
-  { letter: "OP", ex:  0, ey:  1 },
+  { letter: "OPZ", ex:  0, ey:  1 },
   { letter: "",   ex:  1, ey:  1 },
 ];
 
@@ -103,7 +103,7 @@ export default function LoadingScreen() {
         className={styles.brand}
         style={{ opacity: exiting ? 0 : shown ? 1 : 0, transitionDelay: shown ? "350ms" : "0ms" }}
       >
-        <span className={styles.brandName}>FirstOp</span>
+        <span className={styles.brandName}>FirstOpz</span>
         <span className={styles.brandSub}>Find your first opportunity</span>
       </div>
 
