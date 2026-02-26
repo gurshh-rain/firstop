@@ -69,8 +69,8 @@
 .eyebrowDot {
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: #ff176c;
-  box-shadow: 0 0 6px #ff176c;
+  background: #C41E3A;
+  box-shadow: 0 0 6px #C41E3A;
   flex-shrink: 0;
 }
 
@@ -125,7 +125,7 @@
   font-size: 14px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.92);
-  background-color: #ff176c;
+  background-color: #C41E3A;
   padding: 11px 24px;
   border-radius: 10px;
   backdrop-filter: blur(20px);
@@ -134,7 +134,7 @@
   letter-spacing: -0.01em;
 }
 .ctaPrimary:hover {
-  background-color: #ff5392;
+  background-color: #c8324b;
   transform: translateY(-1px);
 }
 .ctaPrimary:active { transform: scale(0.97); }

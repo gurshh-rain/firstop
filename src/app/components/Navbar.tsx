@@ -6,7 +6,7 @@ import styles from "./Navbar.module.css";
 const LINKS = [
   { label: "Search",  href: "#waitlist" },
   
-  { label: "About",   href: "/about" },
+  { label: "About",   href: "#waitlist" },
   { label: "Profile", href: "#waitlist" },
 ];
 
@@ -39,7 +39,7 @@ export default function Navbar() {
       ].filter(Boolean).join(" ")}
     >
       <div className={styles.pill}>
-        <Link href="/" className={styles.logo}>FirstOp</Link>
+        <Link href="/" className={styles.logo}>FirstOpz</Link>
 
         <ul className={styles.links}>
           {LINKS.map(l => (

@@ -164,13 +164,12 @@ export default function Hero() {
         </h1>
 
         <p className={styles.sub}>
-          FirstOp connects high school students with real internships
-          and co-ops — no degree needed, no experience required.
+          FirstOp connects students to structured startup opportunities with no experience required.
         </p>
 
         <div className={styles.ctas}>
           <a href="#waitlist" className={styles.ctaPrimary}>Join the Waitlist</a>
-          <a href="/#waitlist" className={styles.ctaSecondary}>
+          <a href="/search" className={styles.ctaSecondary}>
             Browse Internships
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
               <path d="M2.5 6.5h8M8 3.5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>

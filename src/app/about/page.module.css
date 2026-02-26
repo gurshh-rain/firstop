@@ -80,7 +80,7 @@
   animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.28s both;
 }
 .heroLine3 {
-  color: #ff629c;
+  color: #ff3b83;
   animation: fadeUp 0.75s cubic-bezier(0.22,1,0.36,1) 0.38s both;
 }
 
@@ -549,7 +549,7 @@
   padding: 14px 32px;
   border-radius: 12px;
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 24px rgba(23,124,255,0.3);
+  box-shadow: 0 4px 24px rgba(255, 23, 69, 0.3);
   letter-spacing: -0.01em;
 }
 .ctaBtn:hover {

@@ -3,7 +3,7 @@ import styles from "./Features.module.css";
 
 
 
-const CATEGORIES = ["Technology","Design","Finance","Healthcare","Marketing","Engineering","Research","Media"];
+const CATEGORIES = ["Technology","Design","Business","Engineering", "Healthcare","Research","Media"];
 
 export default function Features() {
   return (
@@ -13,7 +13,7 @@ export default function Features() {
 
         <Reveal delay={0}><p className={styles.eyebrow}>Everything you need</p></Reveal>
         <Reveal delay={80}><h2 className={styles.heading}>Built differently.</h2></Reveal>
-        <Reveal delay={160}><p className={styles.sub}>Most job platforms aren't built for students. FirstOp is.</p></Reveal>
+        <Reveal delay={160}><p className={styles.sub}>Most internship platforms aren't built for students. FirstOpz is.</p></Reveal>
 
 
         <Reveal delay={0}>
