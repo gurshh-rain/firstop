@@ -8,8 +8,9 @@ const MARQUEE = [
   "Architecture", "Public Policy", "Biotechnology", "Film & Media",
 ];
 
-/* ── Interactive grid + fluid red trail ───────────── */
-function InteractiveGrid() {
+const CHARS = ["Y", ">", "X", "$", "O", "*", "0", "1", "#", "+"];
+
+function PixelBlocks() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef   = useRef<number>(0);
 
@@ -18,29 +19,24 @@ function InteractiveGrid() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
 
-    // ── Dot grid config ──────────────────────────────
-    const CELL      = 34;    // dot spacing px
-    const DOT       = 1.0;   // resting dot radius
-    const DOT_DECAY = 0.945; // dot brightness decay per frame
-    const DOT_REACH = 90;    // px radius cursor brightens dots
-
-    // ── Fluid trail config ───────────────────────────
-    const FLUID_LAG   = 1; // how fast red blob chases cursor (lower = more lag)
-    const FLUID_FADE  = 0.08;  // how fast fluid erases per frame (higher = faster)
-    const FLUID_R     = 110;   // radius of red blob
-    const STILL_MS    = 60;    // ms of no movement = cursor is "still"
-
-    // Offscreen canvas for fluid layer
-    let fluidCanvas: HTMLCanvasElement | null = null;
-    let fCtx: CanvasRenderingContext2D | null = null;
-
-    let lagX = -9999, lagY = -9999;
-    let mx   = -9999, my   = -9999;
-    let isMoving = false;
-    let stillTimer: ReturnType<typeof setTimeout>;
+    const BLOCK = 33;
 
     let W = 0, H = 0, cols = 0, rows = 0;
-    let heat: Float32Array;
+    let mx = -9999, my = -9999;
+
+    // Each active block: position, char, born time, die time, alpha
+    type Block = {
+      c: number; r: number;
+      char: string;
+      born: number;    // ms — when it appeared
+      dieAt: number;   // ms — when it starts fading
+      alpha: number;   // current 0..1
+      dead: boolean;
+    };
+
+    const active: Block[] = [];
+    // Track which grid cells are already occupied
+    let occupied: Uint8Array;
 
     const resize = () => {
       W = canvas.offsetWidth;
@@ -48,91 +44,102 @@ function InteractiveGrid() {
       canvas.width  = Math.round(W * devicePixelRatio);
       canvas.height = Math.round(H * devicePixelRatio);
       ctx.scale(devicePixelRatio, devicePixelRatio);
-      cols = Math.ceil(W / CELL) + 2;
-      rows = Math.ceil(H / CELL) + 2;
-      heat = new Float32Array(cols * rows);
-
-      if (!fluidCanvas) {
-        fluidCanvas = document.createElement("canvas");
-      }
-      fluidCanvas.width  = Math.round(W * devicePixelRatio);
-      fluidCanvas.height = Math.round(H * devicePixelRatio);
-      fCtx = fluidCanvas.getContext("2d")!;
-      fCtx.scale(devicePixelRatio, devicePixelRatio);
+      cols = Math.ceil(W / BLOCK) + 1;
+      rows = Math.ceil(H / BLOCK) + 1;
+      occupied = new Uint8Array(cols * rows);
+      active.length = 0;
     };
 
     const onMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mx = e.clientX - rect.left;
       my = e.clientY - rect.top;
-      if (lagX === -9999) { lagX = mx; lagY = my; }
 
-      isMoving = true;
-      clearTimeout(stillTimer);
-      stillTimer = setTimeout(() => { isMoving = false; }, STILL_MS);
+      const now    = performance.now();
+      const RADIUS = 110; // spawn radius px
+      const reach  = Math.ceil(RADIUS / BLOCK);
+      const cc     = Math.floor(mx / BLOCK);
+      const cr     = Math.floor(my / BLOCK);
+
+      for (let dr = -reach; dr <= reach; dr++) {
+        for (let dc = -reach; dc <= reach; dc++) {
+          const nc = cc + dc, nr = cr + dr;
+          if (nc < 0 || nc >= cols || nr < 0 || nr >= rows) continue;
+
+          const px = (nc + 0.5) * BLOCK;
+          const py = (nr + 0.5) * BLOCK;
+          const dist = Math.sqrt((mx - px) ** 2 + (my - py) ** 2);
+          // Probability drops off with distance — no hard circle edge
+          const falloff = 1 - dist / RADIUS;
+          if (falloff <= 0) continue;
+          // Random threshold: cells near center almost always activate,
+          // cells at the edge rarely do — creates jagged organic shape
+          const chance = Math.pow(falloff, 1.4) * 0.7;
+          if (occupied[nr * cols + nc] || Math.random() > chance) continue;
+
+          occupied[nr * cols + nc] = 1;
+
+          // Random delay before dying: 80–350ms after born
+          const lifetime = 100 + Math.random() * 350;
+
+          active.push({
+            c: nc, r: nr,
+            char: CHARS[Math.floor(Math.random() * CHARS.length)],
+            born:  now,
+            dieAt: now + lifetime,
+            alpha: 0,
+            dead:  false,
+          });
+        }
+      }
     };
 
-    const onLeave = () => {
-      mx = -9999; my = -9999;
-      isMoving = false;
-      clearTimeout(stillTimer);
-    };
+    const onLeave = () => { mx = -9999; my = -9999; };
+
+    const APPEAR_MS = 30;  // how fast block fades IN  (ms)
+    const FADE_MS   = 80;  // how fast block fades OUT (ms)
 
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
-      const ox = (W % CELL) / 2;
-      const oy = (H % CELL) / 2;
 
-      // ── 1. Lag cursor for fluid ──────────────────────
-      if (mx !== -9999) {
-        lagX += (mx - lagX) * FLUID_LAG;
-        lagY += (my - lagY) * FLUID_LAG;
-      }
+      const now  = performance.now();
+      const fontSize = Math.round(BLOCK * 0.44);
+      ctx.font         = `bold ${fontSize}px monospace`;
+      ctx.textAlign    = "center";
+      ctx.textBaseline = "middle";
 
-      // ── 2. Update fluid offscreen canvas ────────────
-      if (fCtx && fluidCanvas) {
-        // Always fade — this erases existing trail
-        fCtx.globalCompositeOperation = "source-over";
-        fCtx.fillStyle = `rgba(5,5,5,${FLUID_FADE})`;
-        fCtx.fillRect(0, 0, W, H);
+      for (let i = active.length - 1; i >= 0; i--) {
+        const b = active[i];
 
-        // Only paint new fluid when cursor is actively moving
-        if (isMoving && mx !== -9999) {
-          const grad = fCtx.createRadialGradient(lagX, lagY, 0, lagX, lagY, FLUID_R);
-          grad.addColorStop(0,   "rgba(196,30,58,0.055)");
-          grad.addColorStop(0.4, "rgba(196,30,58,0.022)");
-          grad.addColorStop(1,   "rgba(196,30,58,0)");
-          fCtx.fillStyle = grad;
-          fCtx.fillRect(0, 0, W, H);
+        if (now < b.dieAt) {
+          // Appearing / fully on — snap in quickly
+          const age = now - b.born;
+          b.alpha = Math.min(1, age / APPEAR_MS);
+        } else {
+          // Fading out
+          const dying = now - b.dieAt;
+          b.alpha = Math.max(0, 1 - dying / FADE_MS);
+          if (b.alpha <= 0) {
+            b.dead = true;
+            occupied[b.r * cols + b.c] = 0;
+            active.splice(i, 1);
+            continue;
+          }
         }
-      }
 
-      // ── 3. Composite fluid behind dots ───────────────
-      if (fluidCanvas) {
-        ctx.drawImage(fluidCanvas, 0, 0, W, H);
-      }
+        const x = b.c * BLOCK;
+        const y = b.r * BLOCK;
+        const cx = x + BLOCK / 2;
+        const cy = y + BLOCK / 2;
+        const a = b.alpha;
 
-      // ── 4. Draw dot grid on top ──────────────────────
-      for (let c = 0; c < cols; c++) {
-        for (let r = 0; r < rows; r++) {
-          const x   = ox + c * CELL;
-          const y   = oy + r * CELL;
-          const idx = r * cols + c;
+        // Solid black square
+        ctx.fillStyle = `rgba(6,6,6,${a.toFixed(3)})`;
+        ctx.fillRect(x, y, BLOCK, BLOCK);
 
-          const dx   = mx - x, dy = my - y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const prox = dist < DOT_REACH
-            ? (1 - dist / DOT_REACH) ** 2
-            : 0;
-
-          heat[idx] = Math.max(prox, heat[idx] * DOT_DECAY);
-          const b = heat[idx];
-
-          ctx.beginPath();
-          ctx.arc(x, y, DOT + b * 1.6, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${(0.06 + b * 0.28).toFixed(3)})`;
-          ctx.fill();
-        }
+        // White character
+        ctx.fillStyle = `rgba(255,255,255,${(a * 0.9).toFixed(3)})`;
+        ctx.fillText(b.char, cx, cy + 1);
       }
 
       animRef.current = requestAnimationFrame(draw);
@@ -146,63 +153,47 @@ function InteractiveGrid() {
 
     return () => {
       cancelAnimationFrame(animRef.current);
-      clearTimeout(stillTimer);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
       canvas.removeEventListener("mouseleave", onLeave);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className={styles.gridCanvas} />;
+  return <canvas ref={canvasRef} className={styles.pixelCanvas} aria-hidden />;
 }
 
-/* ── Hero ─────────────────────────────────────────── */
 export default function Hero() {
   return (
     <section className={styles.hero}>
-      <InteractiveGrid />
-
-      {/* horizontal scan line that sweeps down once on load */}
+      <PixelBlocks />
       <div className={styles.scanLine} aria-hidden />
-
-      {/* thin left vertical rule */}
       <div className={styles.vertRule} aria-hidden />
 
       <div className={styles.content}>
-
-        {/* top meta bar */}
         <div className={styles.topBar}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowDot} />
             Internships for students
           </span>
+          <span className={styles.indexLabel}>01 / Hero</span>
         </div>
 
-        {/* asymmetric headline */}
         <h1 className={styles.headline}>
+          <span className={styles.lineClip}><span className={styles.line1}>Your first</span></span>
+          <span className={styles.lineClip}><span className={styles.line2}>opportunity</span></span>
           <span className={styles.lineClip}>
-            <span className={styles.line1}>Your first</span>
-          </span>
-          <span className={styles.lineClip}>
-            <span className={styles.line2}>opportunity</span>
-          </span>
-          <span className={styles.lineClip}>
-            <span className={styles.line3}>
-              starts <em className={styles.redWord}>here.</em>
-            </span>
+            <span className={styles.line3}>starts <em className={styles.redWord}>here.</em></span>
           </span>
         </h1>
 
-        {/* bottom: sub + ctas left, stats right */}
         <div className={styles.bottomRow}>
           <div className={styles.bottomLeft}>
             <p className={styles.sub}>
-              FirstOpz connects students with structured startup opportunities, no experience required.
+              FirstOp connects high school students with real internships
+              and co-ops — no degree needed, no experience required.
             </p>
             <div className={styles.ctas}>
-              <a href="#waitlist" className={styles.ctaPrimary}>
-                Join the Waitlist
-              </a>
+              <a href="#waitlist" className={styles.ctaPrimary}>Join the Waitlist</a>
               <a href="/search" className={styles.ctaSecondary}>
                 Browse Internships
                 <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
@@ -232,7 +223,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* marquee */}
       <div className={styles.marqueeWrap} aria-hidden>
         <div className={styles.marqueeTrack}>
           {[...MARQUEE, ...MARQUEE].map((item, i) => (
