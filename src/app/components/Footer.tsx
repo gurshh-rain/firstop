@@ -3,12 +3,12 @@ import Reveal from "./Reveal";
 import styles from "./Footer.module.css";
 
 const LINKS = [
-  { label: "Search",  href: "/#waitlist" },
-  { label: "Internships",  href: "/#waitlist" },
-  { label: "About",   href: "/#waitlist" },
-  { label: "Profile", href: "/#waitlist" },
-  { label: "Privacy", href: "/#waitlist" },
-  { label: "Terms",   href: "/#waitlist" },
+  { label: "FirstOpz",  href: "/#waitlist" },
+  //{ label: "Internships",  href: "/#waitlist" },
+  //{ label: "About",   href: "/#waitlist" },
+  //{ label: "Profile", href: "/#waitlist" },
+  //{ label: "Privacy", href: "/#waitlist" },
+  //{ label: "Terms",   href: "/#waitlist" },
 ];
 
 export default function Footer() {
@@ -17,7 +17,7 @@ export default function Footer() {
       <div className={styles.inner}>
         <Reveal delay={0}>
           <div className={styles.top}>
-            <span className={styles.logo}>FirstOp</span>
+            <span className={styles.logo}>FirstOpz</span>
             <nav className={styles.links}>
               {LINKS.map(l => (
                 <Link key={l.href} href={l.href} className={styles.link}>{l.label}</Link>
