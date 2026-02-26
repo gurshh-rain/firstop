@@ -35,9 +35,9 @@ export default function Waitlist() {
     setLoading(true);
     const { createClient } = await import("../lib/supabase");
     const supabase = createClient();
-    const { error: dbError } = await supabase
-      .from("waitlist")
-      .insert({ name, email, grade, field, commitment });
+const { error: dbError } = await supabase
+  .from("waitlist")
+  .insert([{ name, email, grade, field, commitment }]);
 
     if (dbError) {
       setError("Something went wrong. Please try again.");
