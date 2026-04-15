@@ -173,7 +173,7 @@ export default function Hero() {
         <div className={styles.topBar}>
           <span className={styles.eyebrow}>
             <span className={styles.eyebrowDot} />
-            Micro-Internships for students
+            Internships for students
           </span> 
         </div>
 
@@ -192,12 +192,7 @@ export default function Hero() {
             </p>
             <div className={styles.ctas}>
               <a href="#waitlist" className={styles.ctaPrimary}>Join the Waitlist</a>
-              <a href="/search" className={styles.ctaSecondary}>
-                Browse Internships
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                  <path d="M2.5 6.5h8M8 3.5l3 3-3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
+  
             </div>
           </div>
 
