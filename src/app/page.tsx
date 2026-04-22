@@ -1,7 +1,6 @@
 import Navbar from "./components/Navbar";
 import LoadingScreen from "./components/Loadingscreen";
 import Hero from "./components/Hero";
-import Features from "./components/Features";
 import Footer from "./components/Footer";
 import Link from "next/link";
 
@@ -12,7 +11,6 @@ export default function Home() {
       <LoadingScreen />
       <Navbar />
       <Hero />
-      <Features />
       <Footer />
     </main>
   );

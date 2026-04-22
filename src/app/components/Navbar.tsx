@@ -3,11 +3,11 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./Navbar.module.css";
 
-const LINKS = [
-  { label: "Search",  idx: "01", href: "#waitlist" },
-  { label: "About",   idx: "02", href: "#waitlist"  },
-  { label: "Profile", idx: "03", href: "#waitlist" },
-];
+//const LINKS = [
+  //{ label: "Search",  idx: "01", href: "#waitlist" },
+  //{ label: "About",   idx: "02", href: "#waitlist"  },
+  //{ label: "Profile", idx: "03", href: "#waitlist" },
+//];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -47,7 +47,8 @@ export default function Navbar() {
         </Link>
 
         {/* Center — indexed links (desktop) */}
-        <ul className={styles.links}>
+        
+        {/*<ul className={styles.links}>
           {LINKS.map(l => (
             <li key={l.idx}>
               <Link href={l.href} className={styles.link}>
@@ -57,23 +58,18 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+        } 
+        
 
         {/* Right — waitlist + menu toggle */}
         <div className={styles.right}>
           <a href="#waitlist" className={styles.waitlistBtn}>
             <span className={styles.waitlistDot} />
-            Waitlist
+            Waitlist Live Now
           </a>
 
           {/* Menu toggle — two horizontal lines become X */}
-          <button
-            className={`${styles.menuBtn} ${open ? styles.menuBtnOpen : ""}`}
-            onClick={() => setOpen(o => !o)}
-            aria-label={open ? "Close menu" : "Open menu"}
-          >
-            <span className={styles.menuLine} />
-            <span className={styles.menuLine} />
-          </button>
+          
         </div>
       </nav>
 
@@ -81,7 +77,7 @@ export default function Navbar() {
       <div className={`${styles.overlay} ${open ? styles.overlayOpen : ""}`}>
         <div className={styles.overlayInner}>
           <nav className={styles.overlayLinks}>
-            {LINKS.map((l, i) => (
+            {/*{LINKS.map((l, i) => (
               <Link
                 key={l.idx}
                 href={l.href}
@@ -92,7 +88,7 @@ export default function Navbar() {
                 <span className={styles.overlayIdx}>{l.idx}</span>
                 {l.label}
               </Link>
-            ))}
+            ))}*/}
           </nav>
 
           <div className={styles.overlayFooter}>
@@ -103,9 +99,7 @@ export default function Navbar() {
             >
               Join the Waitlist →
             </a>
-            <span className={styles.overlayTagline}>
-              Free · No experience needed
-            </span>
+            
           </div>
         </div>
       </div>

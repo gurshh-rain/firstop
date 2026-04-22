@@ -4,7 +4,7 @@ import styles from "./Footer.module.css";
 
 const LINKS = [
   { label: "FirstOpz",  href: "/#waitlist" },
-  //{ label: "Internships",  href: "/#waitlist" },
+  { label: "Instagram",  href: "https://www.instagram.com/firstopz.ca/" },
   //{ label: "About",   href: "/#waitlist" },
   //{ label: "Profile", href: "/#waitlist" },
   //{ label: "Privacy", href: "/#waitlist" },
