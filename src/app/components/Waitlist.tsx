@@ -9,11 +9,6 @@ const FIELDS = [
   "Business & Finance", "Design & Arts", "Law & Policy",
   "Sciences & Research", "Media & Journalism", "Other",
 ];
-const COMMITMENT = [
-  { value: "immediate",  label: "Yes — immediately" },
-  { value: "3months",    label: "Within 3 months" },
-  { value: "exploring",  label: "Just exploring" },
-];
 
 export default function Waitlist() {
   const [name,       setName]       = useState("");
@@ -132,21 +127,7 @@ const { error: dbError } = await supabase
                   </div>
                 </div>
 
-                {/* Commitment */}
-                <div className={styles.field}>
-                  <label className={styles.label}>Ready to commit?</label>
-                  <div className={styles.commitGroup}>
-                    {COMMITMENT.map(c => (
-                      <button
-                        key={c.value} type="button"
-                        onClick={() => setCommitment(c.value)}
-                        className={`${styles.commitBtn} ${commitment === c.value ? styles.commitActive : ""}`}
-                      >
-                        {c.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                
 
                 {error && <p className={styles.errorMsg}>{error}</p>}
 
