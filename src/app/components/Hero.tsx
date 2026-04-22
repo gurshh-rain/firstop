@@ -1,13 +1,13 @@
 "use client";
 import { useState } from "react";
 import Reveal from "./Reveal";
-import styles from "./Waitlist.module.css";
+import styles from "./Hero.module.css";
 
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12", "University"];
 const FIELDS = [
   "Computer Science", "Engineering", "Health & Medicine",
   "Business & Finance", "Design & Arts", "Law & Policy",
-  "Sciences & Research", "Media & Journalism", "Other",
+  "Sciences & Research", "Media & Journalism", "Marketing",
 ];
 
 export default function Waitlist() {
@@ -135,7 +135,6 @@ const { error: dbError } = await supabase
                   {loading ? <span className={styles.spinner} /> : "Join the Waitlist"}
                 </button>
 
-                <p className={styles.fine}>Free forever · No spam</p>
               </form>
             </div>
           )}
