@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Reveal from "./Reveal";
 import styles from "./Hero.module.css";
+import FractalBg from "./FractalBg";
 
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12", "University"];
 const FIELDS = [
@@ -42,10 +43,12 @@ const { error: dbError } = await supabase
     setLoading(false);
     setSubmitted(true);
   };
-
+ 
   return (
+    
     <section id="waitlist" className={styles.section} style={{ position: "relative" }}>
-      <div className={styles.inner}>
+    <FractalBg />    
+    <div className={styles.inner}>
         <Reveal delay={0}><p className={styles.eyebrow}>Limited early access</p></Reveal>
         <Reveal delay={80}><h2 className={styles.heading}>Be first in line.</h2></Reveal>
         <Reveal delay={160}>
@@ -96,7 +99,7 @@ const { error: dbError } = await supabase
 
                 {/* Grade */}
                 <div className={styles.field}>
-                  <label className={styles.label}>Current grade</label>
+                  <label className={styles.label}>Current level of education</label>
                   <div className={styles.chipGroup}>
                     {GRADES.map(g => (
                       <button

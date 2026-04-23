@@ -6,7 +6,18 @@
   position: relative;
   overflow: hidden;
 }
+.bgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.25;  /* adjust to taste */
+  pointer-events: none;
+  z-index: 0;
+    filter: sepia(1) saturate(7) hue-rotate(315deg);
 
+}
 .inner {
   position: relative;
   z-index: 2;
@@ -26,7 +37,7 @@
   color: rgba(255,255,255,0.5);
   margin-bottom: 18px;
   background: rgba(0,0,0,0.05);
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid rgba(255, 26, 26, 0.211);
   padding: 6px 14px;
   border-radius: 8px;
   backdrop-filter: blur(12px);
@@ -40,24 +51,27 @@
   letter-spacing: -0.04em;
   line-height: 1.04;
   margin-bottom: 14px;
+  font-family: var(--font-geist-mono);
+  font-weight: 700;
 }
 
 .sub {
   font-size: 17px;
   font-weight: 300;
-  color: rgba(240,240,248,0.38);
+  color: rgba(240,240,248,0.58);
   line-height: 1.7;
   max-width: 380px;
   letter-spacing: -0.01em;
   margin-top: 20px;
   margin-bottom: 28px;
+  font-family: var(--font-geist-mono);
 }
 
 /* ── Card ────────────────────────────────────────── */
 .formCard, .successCard {
   width: 100%;
   position: relative;
-  background: rgba(12,12,12,0.04);
+  background: rgba(12,12,12,0.91);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 18px;
   backdrop-filter: saturate(200%) blur(32px);
@@ -66,11 +80,12 @@
   overflow: hidden;
 }
 
+
 .cardShimmer {
   position: absolute;
   top: 0; left: 10%; right: 10%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14) 50%, transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.26) 50%, transparent);
   pointer-events: none;
 }
 
@@ -99,21 +114,21 @@
 .label {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255,255,255,0.28);
+  color: rgba(255,255,255,0.48);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .input {
   width: 100%;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.5);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 10px;
   padding: 11px 14px;
   font-size: 14px;
   color: #f0f0f8;
   outline: none;
-  font-family: inherit;
+  font-family: var(--font-geist-mono);
   letter-spacing: -0.01em;
   box-shadow: inset 0 2px 6px rgba(0,0,0,0.25);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -140,7 +155,7 @@
   border-radius: 7px;
   padding: 6px 13px;
   cursor: pointer;
-  font-family: inherit;
+  font-family: var(--font-geist-mono);
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
 }
 .chip:hover {
@@ -174,7 +189,7 @@
   border-radius: 9px;
   padding: 11px 16px;
   cursor: pointer;
-  font-family: inherit;
+  font-family: var(--font-geist-mono);
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   position: relative;
 }
@@ -230,7 +245,8 @@
   border-radius: 10px;
   padding: 13px;
   cursor: pointer;
-  font-family: inherit;
+  font-weight: 600;
+  font-family: var(--font-geist-mono);
   letter-spacing: -0.01em;
   box-shadow: 0 4px 20px rgba(196,30,58,0.28);
   transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.2s ease;

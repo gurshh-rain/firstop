@@ -14,7 +14,7 @@ interface RevealProps {
 export default function Reveal({
   children,
   delay = 0,
-  duration = 700,
+  duration = 1600,
   y = 24,
   className = "",
   style = {},
