@@ -44,9 +44,8 @@ const { error: dbError } = await supabase
   };
 
   return (
-    <section id="waitlist" className={styles.section}>
+    <section id="waitlist" className={styles.section} style={{ position: "relative" }}>
       <div className={styles.inner}>
-
         <Reveal delay={0}><p className={styles.eyebrow}>Limited early access</p></Reveal>
         <Reveal delay={80}><h2 className={styles.heading}>Be first in line.</h2></Reveal>
         <Reveal delay={160}>

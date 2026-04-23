@@ -1,149 +1,147 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Loadingscreen.module.css";
 
-const SHARDS = [
-  { letter: "F",  ex: -1, ey: -1 },
-  { letter: "",   ex:  0, ey: -1 },
-  { letter: "I",  ex:  1, ey: -1 },
-  { letter: "R",  ex: -1, ey:  0 },
-  { letter: "—",  ex:  0, ey:  0 },
-  { letter: "S",  ex:  1, ey:  0 },
-  { letter: "T",  ex: -1, ey:  1 },
-  { letter: "OPZ", ex:  0, ey:  1 },
-  { letter: "",   ex:  1, ey:  1 },
-];
+type Phase = "init" | "split" | "hold" | "gather" | "shrink" | "wipe" | "swipe" | "gone";
 
 export default function LoadingScreen() {
-  const [shown,   setShown]   = useState(false);  // shards scaled in
-  const [exiting, setExiting] = useState(false);  // shards flying out
-  const [gone,    setGone]    = useState(false);  // unmounted
-  const [count,   setCount]   = useState(0);      // 0→100 counter
-  const rafRef = useRef<number>(0);
+  const [phase, setPhase] = useState<Phase>("init");
+  const overlayRef  = useRef<HTMLDivElement>(null);
+  // We track the live pixel positions of the h-lines for the clip rect
+  const [gapTop,    setGapTop]    = useState(0);
+  const [gapBottom, setGapBottom] = useState(0);
+  const [ready, setReady] = useState(false);
+  const rootH = useRef(0);
 
-  useEffect(() => {
-    // Tiny defer so CSS is ready before we trigger the enter transition
-    const t0 = setTimeout(() => setShown(true), 40);
+useEffect(() => {
+  rootH.current = window.innerHeight;
+  const mid = window.innerHeight * 0.5;
 
-    // Animate counter 0→100 over 1800ms
-    const start = performance.now();
-    const DURATION = 1800;
-    const tick = (now: number) => {
-      const t = Math.min((now - start) / DURATION, 1);
-      const ease = 1 - Math.pow(1 - t, 3);
-      setCount(Math.round(ease * 100));
-      if (t < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-    rafRef.current = requestAnimationFrame(tick);
+  setGapTop(mid);
+  setGapBottom(mid);
 
-    // Exit after counter finishes + beat
-    const t1 = setTimeout(() => setExiting(true), 1800 + 300);
-    const t2 = setTimeout(() => setGone(true),    1800 + 300 + 800);
+  // Wait one frame so positions are set before enabling transitions
+  requestAnimationFrame(() => setReady(true));
 
-    return () => {
-      clearTimeout(t0);
-      clearTimeout(t1);
-      clearTimeout(t2);
-      cancelAnimationFrame(rafRef.current);
-    };
+  const t0 = setTimeout(() => {
+    setPhase("split");
+    setGapTop(mid - 28);
+    setGapBottom(mid + 28);
+  }, 120);
+
+    const t1 = setTimeout(() => setPhase("hold"),   120 + 1400);
+    const t2 = setTimeout(() => {
+      setPhase("gather");
+      setGapTop(   window.innerHeight * 0.5);
+      setGapBottom(window.innerHeight * 0.5);
+    }, 120 + 1600 + 200);
+
+    const t3 = setTimeout(() => setPhase("shrink"), 120 + 1600 + 1000 + 300);
+
+    const t4 = setTimeout(() => {
+      setPhase("wipe");
+      const el = overlayRef.current;
+      if (!el) return;
+      el.animate(
+        [
+          { clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 0% 0%)" },
+          { clipPath: "polygon(25% 75%, 75% 75%, 75% 75%, 25% 75%)" },
+        ],
+        { duration: 1400, easing: "cubic-bezier(0.9, 0, 0.1, 1)", fill: "forwards" }
+      );
+    }, 120 + 1600 + 1000 + 650);
+
+    const t5 = setTimeout(() => {
+      setPhase("swipe");
+      const el = overlayRef.current;
+      if (!el) return;
+      el.animate(
+        [{ transform: "translateY(0%)" }, { transform: "translateY(100%)" }],
+        { duration: 900, easing: "cubic-bezier(0.9, 0, 0.1, 1)", fill: "forwards" }
+      );
+    }, 120 + 1600 + 1000 + 1400 + 1100 + 1300);
+
+    const t6 = setTimeout(
+      () => setPhase("gone"),
+      120 + 1600 + 1000 + 1400 + 1100 + 1300 + 950
+    );
+
+    return () => [t0, t1, t2, t3, t4, t5, t6].forEach(clearTimeout);
   }, []);
 
-  if (gone) return null;
+  if (phase === "gone") return null;
+
+  const isSplit  = phase === "split" || phase === "hold";
+  const isGather = phase === "gather";
+  const isShrink = phase === "shrink" || phase === "wipe" || phase === "swipe";
+
+  // Vertical lines
+  const vLeft  = isShrink ? "50%" : "20%";
+  const vRight = isShrink ? "50%" : isSplit || isGather ? "80%" : "20%";
+
+  // Horizontal lines — top/bottom track gapTop/gapBottom
+  // In shrink phase scaleX collapses them
+  const hScale = isShrink ? 0 : 1;
+  const vScale = isShrink ? 0 : 1;
+
+  // Text clip — only reveal between the two h-lines
+  const clipTop    = gapTop;
+  const clipBottom = gapBottom;
+  const textVisible = isSplit || isGather;
 
   return (
-    <div className={styles.root}>
-      {/* 3×3 grid */}
-      <div className={styles.grid}>
-        {SHARDS.map((s, i) => (
-          <div
-            key={i}
-            className={styles.shard}
-            style={{
-              "--delay":   `${i * 50}ms`,
-              "--ex":      s.ex,
-              "--ey":      s.ey,
-              "--opacity": shown && !exiting ? 1 : 0,
-              "--scale":   shown && !exiting ? 1 : exiting ? 0.88 : 0.9,
-              "--tx":      exiting ? `${s.ex * 105}%` : "0%",
-              "--ty":      exiting ? `${s.ey * 105}%` : "0%",
-            } as React.CSSProperties}
-          >
-            {/* Per-shard noise */}
-            <ShardNoise />
+    <div ref={overlayRef} className={styles.root}>
 
-            {s.letter && (
-              <span
-                className={styles.letter}
-                style={{
-                  opacity:   shown && !exiting ? 1 : 0,
-                  transform: shown && !exiting ? "translateY(0)" : "translateY(14px)",
-                  transitionDelay: shown ? `${i * 50 + 100}ms` : "0ms",
-                }}
-              >
-                {s.letter}
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {/* Counter — bottom right */}
+      {/* Left vertical */}
       <div
-        className={styles.counter}
-        style={{ opacity: exiting ? 0 : 1, transform: exiting ? "translateY(6px)" : "none" }}
-      >
-        <span className={styles.counterNum}>{String(count).padStart(3, "0")}</span>
-        <span className={styles.counterLabel}>/ 100</span>
-      </div>
+        className={styles.vLine}
+        style={{
+          left: vLeft,
+          transform: `translateX(-50%) scaleY(${vScale})`,
+        }}
+      />
 
-      {/* Brand — bottom left */}
+      {/* Right vertical */}
       <div
-        className={styles.brand}
-        style={{ opacity: exiting ? 0 : shown ? 1 : 0, transitionDelay: shown ? "350ms" : "0ms" }}
+        className={styles.vLine}
+        style={{
+          left: vRight,
+          transform: `translateX(-50%) scaleY(${vScale})`,
+        }}
+      />
+
+      {/* Top horizontal */}
+      <div
+      className={styles.hLine}
+      style={{
+        top: `${gapTop}px`,
+        transform: `translateY(-50%) scaleX(${hScale})`,
+        transition: ready ? undefined : "none",
+      }}
+    />
+
+    <div
+      className={styles.hLine}
+      style={{
+        top: `${gapBottom}px`,
+        transform: `translateY(-50%) scaleX(${hScale})`,
+        transition: ready ? undefined : "none",
+      }}
+    />
+
+      {/* Text — clipped to the gap between h-lines */}
+      <div
+        className={styles.textWrap}
+        style={{
+          clipPath: `inset(${clipTop}px 0px calc(100% - ${clipBottom}px) 0px)`,
+          opacity: textVisible ? 1 : 0,
+        }}
       >
-        <span className={styles.brandName}>FirstOpz</span>
-        <span className={styles.brandSub}>Find your first opportunity</span>
+        <p className={styles.headline}>
+          Find your <em>first</em> opportunity
+        </p>
       </div>
 
-      {/* Red progress line — bottom */}
-      <div className={styles.progressTrack}>
-        <div
-          className={styles.progressFill}
-          style={{ transform: `scaleX(${count / 100})` }}
-        />
-      </div>
     </div>
   );
-}
-
-/* Sparse random pixel noise per shard */
-function ShardNoise() {
-  const ref = useRef<HTMLCanvasElement>(null);
-  useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    let raf: number;
-    const draw = () => {
-      const W = canvas.width  = canvas.offsetWidth;
-      const H = canvas.height = canvas.offsetHeight;
-      ctx.clearRect(0, 0, W, H);
-      // Scatter ~0.8% of pixels as dim white flecks
-      const count = Math.floor(W * H * 0.008);
-      ctx.fillStyle = "rgba(255,255,255,0.35)";
-      for (let i = 0; i < count; i++) {
-        ctx.fillRect(
-          Math.floor(Math.random() * W),
-          Math.floor(Math.random() * H),
-          1, 1
-        );
-      }
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => cancelAnimationFrame(raf);
-  }, []);
-  return <canvas ref={ref} className={styles.noise} />;
 }
