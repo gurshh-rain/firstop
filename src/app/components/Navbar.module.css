@@ -24,13 +24,12 @@
 
 /* ── Logo ─────────────────────────────────────────── */
 .logo {
-  color: #ffffff;
   display: flex;
-  align-items: baseline;
-  gap: 0;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
-  flex-shrink: 0;
 }
+
 
 .logoMark {
   font-size: 17px;
@@ -42,9 +41,18 @@
 
 .logoText {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: var(--font-geist-mono);
   color: rgb(255, 255, 255);
   letter-spacing: -0.03em;
+}
+
+
+.logoImage {
+  z-index: 10;
+  width: 20px; 
+  height: auto;
+  display: block;
 }
 
 /* ── Center links ─────────────────────────────────── */

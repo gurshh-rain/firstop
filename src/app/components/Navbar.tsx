@@ -43,6 +43,7 @@ export default function Navbar() {
 
         {/* Left — logo */}
         <Link href="/" className={styles.logo} onClick={() => setOpen(false)}>
+          <img src="/image1.png" alt="" aria-hidden="true" className={styles.logoImage} />
           <span className={styles.logoText}>FirstOpz</span>
         </Link>
 

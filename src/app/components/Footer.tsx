@@ -17,7 +17,7 @@ export default function Footer() {
       <div className={styles.inner}>
         <Reveal delay={0}>
           <div className={styles.top}>
-            <span className={styles.logo}>FirstOpz</span>
+            <img src="/image1.png" alt="" aria-hidden="true" className={styles.logoImage} />
             <nav className={styles.links}>
               {LINKS.map(l => (
                 <Link key={l.href} href={l.href} className={styles.link}>{l.label}</Link>
@@ -27,7 +27,7 @@ export default function Footer() {
         </Reveal>
         <Reveal delay={80}>
           <div className={styles.bottom}>
-            <span>Copyright © {new Date().getFullYear()} FirstOp. All rights reserved.</span>
+            <span>Copyright © {new Date().getFullYear()} FirstOpz. All rights reserved.</span>
             <span>Made for students.</span>
           </div>
         </Reveal>

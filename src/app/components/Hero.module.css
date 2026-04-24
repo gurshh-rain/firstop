@@ -34,10 +34,10 @@
   align-items: center;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.732);
   margin-bottom: 18px;
-  background: rgba(0,0,0,0.05);
-  border: 1px solid rgba(255, 26, 26, 0.211);
+  background: rgba(0, 0, 0, 0.311);
+  border: 1px solid rgba(255, 26, 26, 0.45);
   padding: 6px 14px;
   border-radius: 8px;
   backdrop-filter: blur(12px);
@@ -58,7 +58,7 @@
 .sub {
   font-size: 17px;
   font-weight: 300;
-  color: rgba(240,240,248,0.58);
+  color: rgba(239, 239, 239, 0.75);
   line-height: 1.7;
   max-width: 380px;
   letter-spacing: -0.01em;
