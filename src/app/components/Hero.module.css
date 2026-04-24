@@ -12,10 +12,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.25;  /* adjust to taste */
+  opacity: 0.15; 
   pointer-events: none;
   z-index: 0;
-    filter: sepia(1) saturate(7) hue-rotate(315deg);
+  filter: sepia(1) saturate(100) hue-rotate(315deg);
 
 }
 .inner {
@@ -71,7 +71,7 @@
 .formCard, .successCard {
   width: 100%;
   position: relative;
-  background: rgba(12,12,12,0.91);
+  background: rgba(12,12,12,0.71);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 18px;
   backdrop-filter: saturate(200%) blur(32px);
