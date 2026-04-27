@@ -15,7 +15,7 @@
   opacity: 0.15; 
   pointer-events: none;
   z-index: 0;
-  filter: sepia(1) saturate(100) hue-rotate(315deg);
+  filter: sepia(1) saturate(70) hue-rotate(315deg);
 
 }
 .inner {
